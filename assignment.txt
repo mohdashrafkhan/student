@@ -1,0 +1,401 @@
+<?php
+//config.php file
+$servername = "localhost";
+$username = "root";
+$password ="";
+$dbname ="labs";
+$conn = mysqli_connect($servername,$username,$password,$dbname);
+?>
+<?php
+//studentform.php files
+include("config.php");
+if(isset($_POST['submit']))
+{  
+   $studentname=$_POST['studentname'];
+   $course=$_POST['course'];
+   $year=$_POST['year'];
+   $address=$_POST['address'];
+   $contactnumber=$_POST['contactnumber'];
+   $sql ="INSERT INTO `student`(`studentname`, `course`, `year`, `address`, `contactnumber`) VALUES (' $studentname',' $course','$year',' $address',' $contactnumber')";
+   if(mysqli_query($conn,$sql))
+    {  
+    echo "data stored successfully";
+    }
+    else{
+    echo "failed";
+   }   
+}
+?>
+<?php 
+//VALIDATION
+// define variables to empty values  
+$studentnameErr = $courseErr = $yearErr = $addressErr = $contactnumberErr = "";  
+$studentname = $course = $year = $address =  $contactnumber ="";  
+  
+//Input fields validation  
+if ($_SERVER["REQUEST_METHOD"] == "POST") {  
+      
+//String Validation  
+    if (empty($_POST["studentname"])) {  
+        $studentnameErr  = " student Name is required";  
+    } else {  
+        $studentname = input_data($_POST["studentname"]);  
+            // check if name only contains letters and whitespace  
+            if (!preg_match("/^[a-zA-Z ]*$/",$studentname)) {  
+                $studentnameErr = "Only alphabets and white space are allowed";  
+            }  
+    }     
+    if (empty($_POST["course"])) {  
+            $courseErr = "Course is required";  
+    } else {  
+            $course = input_data($_POST["course"]);       
+     }  
+    
+    //Number Va
+    if (empty($_POST["year"])) {  
+            $yearErr = "Year is required";  
+    } else {  
+            $year = input_data($_POST["year"]);  
+    } 
+    if (empty($_POST["address"])) {  
+        $addressErr = "Address is required";  
+    } else {  
+        $address = input_data($_POST["address"]);  
+    } 
+      
+    //URL Validation      
+    if (empty($_POST["contactnumber"])) {  
+        $contactnumberErr = "Contact Number is required";  
+    } else {  
+         $contactnumber = input_data($_POST["contactnumber"]);      
+    }  
+}  
+function input_data($data) {  
+  $data = trim($data);  
+  $data = stripslashes($data);  
+  $data = htmlspecialchars($data);  
+  return $data;  
+}  
+?> 
+<!DOCTYPE html>
+<html>
+<head>
+<title>STUDENT FORM</title>
+<style>
+        .error{color:#FF0001;}
+</style>
+</head>
+<body>              
+            <h2> STUDENT INFORMATION </h2>
+              <form action="" method="post" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="form-group row">
+                        <label for="teachername" class="col-sm-6 col-form-label">
+                            Student Name:
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="studentname" placeholder="Enter student Name">
+                            <span class="error">*<?php echo $studentnameErr; ?></span><br><br>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="email" class="col-sm-6 col-form-label">
+                            Course:
+                        </label>
+                        <div class="col-sm-6">
+                            <select name="course" id='course'>
+                               <option value="">SELECT COURSE</option>  
+                               <option value="BCA">BCA</option> 
+                               <option value="BSC">BSC</option>
+                               <option value="B.COM">B.COM</option>    
+                            </select>
+                            <span class="error">*<?php echo $courseErr; ?></span><br><br>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Profile" class="col-sm-6 col-form-label">
+                            Year
+                        </label>
+                        <div class="col-sm-6">
+                           <select name="year" id='year'>
+                              <option value="">SELECT YEAR</option>
+                              <option value="FIRSTYEAR">FIRST YEAR</option>
+                              <option value="SECOND YEAR">SECOND YEAR</option>
+                              <option value="THIRD YEAR">THIRD YEAR</option>
+                           </select>
+                           <span class="error">*<?php echo $yearErr; ?></span><br><br>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Profile" class="col-sm-6 col-form-label">
+                            Address
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="address" placeholder="address">
+                            <span class="error">*<?php echo $addressErr; ?></span><br><br>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Profile" class="col-sm-6 col-form-label">
+                            Contact No.
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="contactnumber" placeholder="Enter Contact No">
+                            <span class="error">*<?php echo  $contactnumberErr; ?></span><br><br>
+                            <br><br>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                    <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+</body>
+</html>
+<?php
+$query="SELECT * FROM student";
+$student=mysqli_query($conn,$query);
+?>
+                        <div class="col-md-12">
+                           <div class="white_shd full margin_bottom_30">
+                              <div class="full graph_head">
+                                 <div class="heading1 margin_0">
+                                    <h2>STUDENT FEES DETAIL</h2>
+                                 </div>
+                              </div>
+                              <div class="table_section padding_infor_info">
+                                 <div class="table-responsive-sm">
+                                 <?php
+                                    if (mysqli_num_rows($student) > 0) {      
+                                    ?>
+                                    <table class="table">
+                                       <thead>
+                                          <tr>
+                                             <th>id</th>
+                                             <th>Student Name</th>
+                                             <th>Course</th>
+                                             <th>Year</th>
+                                             <th>Address</th>
+                                             <th>Contact No</th>
+                                             <th>Action</th>
+                                          </tr>
+                                       </thead>
+                                       <?php
+                                           $i=0;
+                                           while($row = mysqli_fetch_array($student)) {
+                                          // $yt="SELECT * FROM `student` INNER JOIN `category` ON `student`.`course` = `category`.`cid` WHERE `cid`='".$aRR["cid"]."'";
+                                           //$yt=mysqli_query($con,$yt);
+                                       ?>
+                                       <tbody>
+                                          <tr>
+                                             <td><?php echo $row['id']; ?></td>
+                                             <td><?php echo $row['studentname']; ?></td>
+                                             <td><?php echo $row['course']; ?> </td>
+                                             <td><?php echo $row['year']; ?> </td>
+                                             <td><?php echo $row['address']; ?> </td>
+                                             <td><?php echo $row['contactnumber']; ?> </td>
+                                             <td><a href="edit.php?id=<?php echo $row['id']; ?>">Edit</a> <a href="delete.php?id=<?php echo $row['id']; ?>">Delete</a></td>
+                                             <td><a href="view.php?id=<?php echo $row["id"]; ?>">View</a></td>
+                                          </tr>
+                                       </tbody>
+                                 <?php
+                                   $i++;
+                                   }
+                                   }
+                                   ?>
+                                    </table>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+<?php
+//edit.php file
+include("config.php");
+      $id=$_GET['id'];
+      $query = "SELECT * FROM student WHERE id=$id";
+      $table = mysqli_query($conn,$query);
+      $row=mysqli_fetch_array($table);
+//update code
+include("config.php");
+if(isset($_POST['update']))
+{  
+   $studentname=$_POST['studentname'];
+   $course=$_POST['course'];
+   $year=$_POST['year'];
+   $address=$_POST['address'];
+   $contactnumber=$_POST['contactnumber'];
+   $sql=" UPDATE `student` SET `studentname`='$studentname',`course`='$course',`year`=' $year',`address`=' $address',`contactnumber`='$contactnumber'";
+   if(mysqli_query($conn,$sql))
+    {  
+    echo "data stored successfully";
+    }
+    else{
+    echo "failed";
+   }   
+}
+?>
+<?php 
+// define variables to empty values  
+$studentnameErr = $courseErr = $yearErr = $addressErr = $contactnumberErr = "";  
+$studentname = $course = $year = $address =  $contactnumber ="";  
+  
+//Input fields validation  
+if ($_SERVER["REQUEST_METHOD"] == "POST") {  
+      
+//String Validation  
+    if (empty($_POST["studentname"])) {  
+        $studentnameErr  = " student Name is required";  
+    } else {  
+        $studentname = input_data($_POST["studentname"]);  
+            // check if name only contains letters and whitespace  
+            if (!preg_match("/^[a-zA-Z ]*$/",$studentname)) {  
+                $studentnameErr = "Only alphabets and white space are allowed";  
+            }  
+    }     
+    if (empty($_POST["course"])) {  
+            $courseErr = "Course is required";  
+    } else {  
+            $course = input_data($_POST["course"]);       
+     }  
+    
+    //Number Va
+    if (empty($_POST["year"])) {  
+            $yearErr = "Year is required";  
+    } else {  
+            $year = input_data($_POST["year"]);  
+    } 
+    if (empty($_POST["address"])) {  
+        $addressErr = "Address is required";  
+    } else {  
+        $address = input_data($_POST["address"]);  
+    } 
+      
+    //URL Validation      
+    if (empty($_POST["contactnumber"])) {  
+        $contactnumberErr = "Contact Number is required";  
+    } else {  
+         $contactnumber = input_data($_POST["contactnumber"]);      
+    }  
+}  
+function input_data($data) {  
+  $data = trim($data);  
+  $data = stripslashes($data);  
+  $data = htmlspecialchars($data);  
+  return $data;  
+}  
+?> 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>              
+            <h2> STUDENT INFORMATION </h2>
+              <form action="" method="post" enctype="multipart/form-data">
+                <div class="modal-body"> 
+                    <div class="form-group row">
+                        <label for="teachername" class="col-sm-6 col-form-label">
+                            Student Name:
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="studentname" placeholder="Enter student Name" value="<?php echo $row["studentname"];?>">
+                            <span class="error">*<?php echo $studentnameErr; ?></span><br><br>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="email" class="col-sm-6 col-form-label">
+                            Course:
+                        </label>
+                        <div class="col-sm-6">
+                            <select name="course" id='course'>
+                               <?php
+                                $stddata="SELECT * FROM `student`";
+                                $result1=mysqli_query($conn,$stddata);
+                                ?>
+                               <?php while($std = $result1->fetch_array(MYSQLI_ASSOC)){ 
+                               ?>
+                               <option value="<?php echo  $std['course']; ?>"  <?php if($row["id"]===$std['id']) echo 'selected="selected"';?> ><?php echo  $std['course']; ?></option>
+                                <?php  }
+                                ?>   
+                                <option value="BCA">BCA</option>
+                                <option value="BSC">BSC</option>
+                                <option value="B.COM">B.COM</option>
+                            </select>
+                            <span class="error">*<?php echo $courseErr; ?></span><br><br>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Profile" class="col-sm-6 col-form-label">
+                            Year
+                        </label>
+                        <div class="col-sm-6">
+                           <select name="year" id='year'>
+                               <?php
+                                $year="SELECT * FROM `student`";
+                                $result2=mysqli_query($conn,$year);
+                                ?>
+                               <?php while($yr = $result2->fetch_array(MYSQLI_ASSOC)){ 
+                               ?>
+                               <option value="<?php echo  $yr['year']; ?>"  <?php if($row["id"]===$yr['id']) echo 'selected="selected"';?> ><?php echo  $yr['year']; ?></option>
+                                <?php  }
+                                ?>  
+                              <option value="">SELECT YEAR</option>
+                              <option value="FIRSTYEAR">FIRST YEAR</option>
+                              <option value="SECOND YEAR">SECOND YEAR</option>
+                              <option value="THIRD YEAR">THIRD YEAR</option>
+                           </select>
+                           <span class="error">*<?php echo $yearErr; ?></span><br><br>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Profile" class="col-sm-6 col-form-label">
+                            Address
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="address" placeholder="address" value="<?php echo $row["address"];?>">
+                            <span class="error">*<?php echo $addressErr; ?></span><br><br>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Profile" class="col-sm-6 col-form-label">
+                            Contact No.
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="contactnumber" placeholder="Enter Contact No" value="<?php echo $row["contactnumber"];?>">
+                            <span class="error">*<?php echo  $contactnumberErr; ?></span><br><br>
+                            <br><br>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                    <button type="submit" name="update" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </form>
+</body>
+</html>
+<?php
+//view.php file
+include("config.php");
+      $id=$_GET['id'];
+      $query = "SELECT * FROM student WHERE id = $id";
+      $table = mysqli_query($conn,$query);
+      $row=mysqli_fetch_array($table);
+?>   
+      <h2>STUDENT DETAILS</h2>
+      <tr class="list-unstyled">
+        <td><?php echo $row["studentname"]; ?><td><br>
+        <td><?php echo $row["course"]; ?></td><br>
+        <td><?php echo $row["year"]; ?></td><br>
+        <td><?php echo $row["address"]; ?></td><br>
+        <td><?php echo $row["contactnumber"]; ?></td><br>
+      </tr>
+
+
+
+
+
+
+
